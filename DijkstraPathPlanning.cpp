@@ -1,8 +1,6 @@
 #include <iostream>
 #include <pcl/io/pcd_io.h>
 #include <pcl/common/common.h>
-#include <pcl/point_types.h>
-#include <pcl/visualization/cloud_viewer.h>
 #include <pcl/octree/octree_search.h>
 #include <cmath>
 #include <chrono>
@@ -15,6 +13,28 @@ using namespace std::chrono;
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloud;
 typedef pcl::octree::OctreePointCloudSearch<pcl::PointXYZ> Octree;
 typedef coder::array<float, 2> Matrix;
+typedef std::vector<double> Vector;
+
+void
+printExecutionTime(std::chrono::high_resolution_clock::time_point start,
+                   std::chrono::high_resolution_clock::time_point stop,
+                   const std::string &mode) {
+
+    if (mode == "setup") {
+        std::chrono::duration<double, std::milli> duration = stop - start;
+        std::cout << "Setup levou "
+                  << duration.count() / 1000
+                  << " segundos para executar."
+                  << std::endl;
+    } else if (mode == "dijkstra") {
+        std::chrono::duration<double, std::milli> duration = stop - start;
+        std::cout << "Dijkstra levou "
+                  << duration.count() / 1000
+                  << " segundos para executar."
+                  << std::endl;
+    }
+
+}
 
 PointCloud importPointCloud() {
 
@@ -124,11 +144,35 @@ void calculateCostMatrix(Matrix &AdjacencyMatrix, Matrix &CostMatrix, Matrix &gr
     }
 }
 
+int getCorrespondentGraphNodes(Matrix &graphCoordinates, int N, float pointX, float pointY) {
+    int index = 0;
+    float distance = std::numeric_limits<float>::infinity();
+    float temp_distance = 0;
+
+    for (int i = 0; i < N; i++) {
+        temp_distance = sqrt(pow(pointX - graphCoordinates.at(i, 1), 2) + pow(pointY - graphCoordinates.at(i, 2), 2));
+        if (temp_distance < distance) {
+            distance = temp_distance;
+            index = i;
+        }
+    }
+
+    return index;
+}
+
 int main() {
     auto start = high_resolution_clock::now();
 
     float octreeResolution = 0.1f; // Resolução da octree
-    float graphResolution = 0.8f; // Resolução do grafo em metros
+    float graphResolution = 0.5f; // Resolução do grafo em metros
+
+    float startPositionX = 13.8f;
+    float startPositionY = -4.1f;
+    float goalPositionX = -15.0f;
+    float goalPositionY = 1.25f;
+
+    int startNodeID = 0;
+    int goalNodeID = 0;
 
     PointCloud cloud = importPointCloud();
     Octree octree = transformPointCloudToOctree(cloud, octreeResolution);
@@ -136,6 +180,7 @@ int main() {
     Matrix AdjacencyMatrix;
     Matrix CostMatrix;
     Matrix graphCoordinates;
+    Vector pathIndexes;
 
     int rows = 0;
     int columns = 0;
@@ -144,21 +189,27 @@ int main() {
 
     AdjacencyMatrix.set_size(N, N);
     CostMatrix.set_size(N, N);
-    graphCoordinates.set_size(N, 3);
+    graphCoordinates.set_size(N * 3, 3);
 
     populateAdjacencyMatrix(AdjacencyMatrix, rows, columns);
     getGraphCoordinates(octree, cloud, graphCoordinates, rows, columns, graphResolution);
     calculateCostMatrix(AdjacencyMatrix, CostMatrix, graphCoordinates, rows * columns);
-
-    double resultado = Dijkstra(AdjacencyMatrix, CostMatrix, 50, 55);
-    std::cout << "Custo total: " << resultado << std::endl;
+    startNodeID = getCorrespondentGraphNodes(graphCoordinates, N, startPositionX, startPositionY);
+    goalNodeID = getCorrespondentGraphNodes(graphCoordinates, N, goalPositionX, goalPositionY);
 
     auto stop = high_resolution_clock::now();
-    std::chrono::duration<double, std::milli> duration = stop - start;
-    std::cout << "Código levou "
-              << duration.count() / 1000
-              << " segundos para executar."
-              << std::endl;
+    printExecutionTime(start, stop, "setup");
+
+    /*------------Dijkstra------------*/
+
+    start = high_resolution_clock::now();
+
+    double totalCost = Dijkstra(AdjacencyMatrix, CostMatrix, startNodeID, goalNodeID, pathIndexes);
+
+    stop = high_resolution_clock::now();
+    printExecutionTime(start, stop, "dijkstra");
+
+    std::cout << "Custo total: " << totalCost << std::endl;
 
     return 0;
 }

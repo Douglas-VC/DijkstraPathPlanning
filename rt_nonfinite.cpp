@@ -1,19 +1,3 @@
-//
-//  Academic License - for use in teaching, academic research, and meeting
-//  course requirements at degree granting institutions only.  Not for
-//  government, commercial, or other organizational use.
-//
-//  rt_nonfinite.cpp
-//
-//  Code generation for function 'Dijkstra'
-//
-
-
-//
-//  Abstract:
-//       MATLAB for code generation function to initialize non-finites,
-//       (Inf, NaN and -Inf).
-
 // Include files
 #include "rt_nonfinite.h"
 #include <cmath>
@@ -30,36 +14,30 @@ real32_T rtMinusInfF = -std::numeric_limits<real32_T>::infinity();
 //  Abstract:
 //  Test if value is infinite
 
-boolean_T rtIsInf(real_T value)
-{
-  return ((value==rtInf || value==rtMinusInf) ? true : false);
+boolean_T rtIsInf(real_T value) {
+    return ((value == rtInf || value == rtMinusInf) ? true : false);
 }
 
 // Function: rtIsInfF =================================================
 //  Abstract:
 //  Test if single-precision value is infinite
 
-boolean_T rtIsInfF(real32_T value)
-{
-  return ((value==rtInfF || value==rtMinusInfF) ? true : false);
+boolean_T rtIsInfF(real32_T value) {
+    return ((value == rtInfF || value == rtMinusInfF) ? true : false);
 }
 
 // Function: rtIsNaN ==================================================
 //  Abstract:
 //  Test if value is not a number
 
-boolean_T rtIsNaN(real_T value)
-{
-  return ((value!=value) ? true : false);
+boolean_T rtIsNaN(real_T value) {
+    return ((value != value) ? true : false);
 }
 
 // Function: rtIsNaNF =================================================
 //  Abstract:
 //  Test if single-precision value is not a number
 
-boolean_T rtIsNaNF(real32_T value)
-{
-  return ((value!=value) ? true : false);
+boolean_T rtIsNaNF(real32_T value) {
+    return ((value != value) ? true : false);
 }
-
-// End of code generation (rt_nonfinite.cpp)
