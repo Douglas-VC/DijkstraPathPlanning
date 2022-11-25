@@ -1,0 +1,13 @@
+<launch>
+
+<!--Run the node for path planning -->
+<node pkg = "dijkstra_planning" name = "dijkstra_planning" type = "DijkstraPathPlanning" args="" output="screen">
+    <rosparam command="load" file="$(find dijkstra_planning)/config/dijkstra_planning.yaml"/>
+</node>
+
+<!--Run the node that controls the robot with vector fields -->
+<node pkg="espeleo_control" name="vector_field" type="vec_field_control.py" args="" output="screen">
+    <rosparam command="load" file="$(find dijkstra_planning)/config/control_params.yaml"/>
+</node>
+
+</launch>

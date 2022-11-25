@@ -1,0 +1,28 @@
+#Parameters for the dijkstra_planning package
+
+# Arquivo octomap a ser importado
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/corredor.ot
+#octomapFilePath: "/home/douglas/catkin_ws/src/dijkstra_planning/resources/corredor_teto.ot"
+#octomapFilePath: "/home/douglas/catkin_ws/src/dijkstra_planning/resources/campinho20.ot"
+#octomapFilePath: "/home/douglas/catkin_ws/src/dijkstra_planning/resources/campinho10.ot"
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/corridor_thursday_01.ot
+octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/corridor_thursday_01_mod.ot
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/ExperimentosCorredorUFMG/corredor_exp_1.ot
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/ExperimentosCorredorUFMG/corredor_exp_2.ot
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/ExperimentosCorredorUFMG/corredor_exp_map.ot
+#octomapFilePath: /home/douglas/catkin_ws/src/dijkstra_planning/resources/ExperimentosCorredorUFMG/corredor_exp_map3.ot
+
+# Métrica utilizada no planejamento de caminhos
+metric: 1  # distance
+#metric: 2  # height
+#metric: 3  # combined
+
+# Peso atribuído aos custos de distãncia e altura para métrica combinada
+distanceWeight: 1.0
+heightWeight: 2.0
+
+# Frames para pegar pose do robô
+#sourceFrame: "base_init"
+#targetFrame: "ground_truth"
+sourceFrame: "odom"
+targetFrame: "espeleo_robo/base_link"
